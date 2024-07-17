@@ -2,10 +2,13 @@ import React from 'react';
 import nagadimg from '../../../assets/nagad.jpg'
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+// import axios, { AxiosError } from 'axios';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+// import axiosPublic from '../../../hooks/useAxiosPublic';
+import useAxiosPublic from '../../../hooks/useAxiosPublic';
 const Login = () => {
+    const axiosPublic = useAxiosPublic()
     const { register, handleSubmit } = useForm();
     const findUser = localStorage.getItem('token')
     const navigate = useNavigate()
@@ -24,7 +27,7 @@ const Login = () => {
         //     return
         // }
         try {
-            const res = await axios.post(`http://localhost:5000/auth/login`, formdata)
+            const res = await axiosPublic.post(`/auth/login`, formdata)
             // console.log(AxiosError.message);
             console.log(res.data);
             if (res.data) {
@@ -47,7 +50,7 @@ const Login = () => {
                 icon: "error",
                 title: "Oops...",
                 text: `${err.response.data.message}`
-              });
+            });
         }
 
         // const findUser = res.data?.find(user => user?.email === formdata?.emailOrnumber || user?.phone === formdata?.emailOrnumber)
