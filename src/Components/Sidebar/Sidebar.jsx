@@ -7,6 +7,9 @@ import { MdAdminPanelSettings, MdManageAccounts } from 'react-icons/md';
 import { SiPowervirtualagents } from 'react-icons/si';
 import { Navigate, NavLink, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+// import { useQuery } from '@tanstack/react-query';
 
 const Sidebar = () => {
     const nevigate = useNavigate()
@@ -14,29 +17,29 @@ const Sidebar = () => {
     const email = localStorage.getItem('email')
     const [role, setRole] = useState(null)
     const [name, setName] = useState(null)
-    console.log(email);
+    const axiosSecure = useAxiosSecure()
+    const axiosPublic = useAxiosPublic()
+    // console.log(findUser);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await axiosSecure.get(`/user?email=${email}`)
+                console.log(res.data);
+                setName(res.data.name)
+                setRole(res.data.role);
 
-    const fetchData = async () => {
-        try {
-            const res = await axios.get(`http://localhost:5000/user?email=${email}`, {
-                headers: {
-                    Authorization: findUser
-                }
-            })
-            console.log(res.data);
-            setName(res.data.name)
-            setRole(res.data.role);
-
+            }
+            catch (err) {
+                console.log('err', err);
+            }
         }
-        catch (err) {
-            console.log('err', err);
-        }
-    }
-    fetchData()
-    console.log(role);
+        fetchData()
+    }, [axiosSecure, email])
+    // console.log(role);
     const handelLogOutBtn = () => {
         const token = localStorage.getItem('token')
+        // console.log(token);
         if (!token) {
             return nevigate('/login')
         }
@@ -60,7 +63,7 @@ const Sidebar = () => {
                     return
                 }
                 else {
-                    console.log('Jwt no accesF');
+                    // console.log('Jwt no accesF');
                 }
                 Swal.fire({
                     title: "Logout Successfully!",
@@ -101,7 +104,7 @@ const Sidebar = () => {
                         {role === 'user' && <li className="text-xl">
                             <NavLink to='/transactions'>
                                 <a rel="noopener noreferrer" href="#" className="flex items-center p-2 space-x-3 rounded-md">
-                                    <p><GrTransaction/></p>
+                                    <p><GrTransaction /></p>
                                     <span>Transactions</span>
                                 </a>
                             </NavLink>

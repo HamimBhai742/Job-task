@@ -5,18 +5,25 @@ import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const Agent = () => {
+    // const [startfn, setStartfn] = useState(false)
     const token = localStorage.getItem('token')
     const email = localStorage.getItem('email')
     console.log(token, 'lil');
     const axiosPublic = useAxiosPublic()
     const axiosSecure = useAxiosSecure()
-    const [agent, setAgent] = useState()
+    // const [agent, setAgent] = useState()
     const [alldata, setAllData] = useState([])
+    const { data: agent, refetch: reCall } = useQuery({
+        queryKey: ['allUsers'],
+        queryFn: async () => {
+            const result = await axiosSecure.get(`/agent?email=${email}`)
+            return result.data;
+        }
+    })
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axiosSecure.get(`/agent?email=${email}`)
-                setAgent(result.data);
                 const res = await axiosSecure.get(`/all-user`)
                 setAllData(res.data);
             }
@@ -25,7 +32,8 @@ const Agent = () => {
             }
         }
         fetchData()
-    }, [])
+    }, [axiosSecure, email])
+
     console.log(alldata);
     const { data: cashInRequest = [] } = useQuery({
         queryKey: ['cashInRequest'],
@@ -35,11 +43,27 @@ const Agent = () => {
         }
     })
     console.log(cashInRequest);
-    const handelCashInApproveBtn = async(id) => {
+    const handelCashInApproveBtn = async (id) => {
         console.log(id);
+        // const agent=alldata
         const cashIn = cashInRequest.find(ca => ca?._id === id)
         const findUser = alldata.find(ca => ca?.email === cashIn?.email)
-        const res=await axiosSecure.patch('/cash-in')
+        const agent = alldata.find(ca => ca?.email === email)
+        const agentAmount = parseInt(agent.amount)
+        const currentCashInAmount = parseInt(cashIn.amount)
+        const previousAmount = parseInt(findUser.amount)
+        const totalCashInAmount = previousAmount + currentCashInAmount
+        const totalCashOutAmount = agentAmount - currentCashInAmount
+        console.log(totalCashOutAmount);
+
+        // const res = await axiosSecure.patch(`/cash-out/{id}`)
+        // console.log(res.data);
+        const res = await axiosSecure.patch(`/cash-out/${email}?amount=${totalCashOutAmount}`)
+        console.log(res.data);
+        const resCashIn = await axiosSecure.patch(`/cash-in/${cashIn?.email}?amount=${totalCashInAmount}`)
+        // console.log(resCashIn.data);
+
+        reCall()
         // console.log(findUser);
         // console.log(cashIn);
     }
