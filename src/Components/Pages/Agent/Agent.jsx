@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
+import crypto from 'crypto';
 
 const Agent = () => {
     // const [startfn, setStartfn] = useState(false)
@@ -53,11 +54,17 @@ const Agent = () => {
         console.log(cashIn);
         const findUser = alldata.find(ca => ca?.email === cashIn?.email)
         const agent = alldata.find(ca => ca?.email === email)
-        const agentAmount = parseInt(agent.amount)
+        const agentAmount = parseInt(agent?.amount)
         const currentCashInAmount = parseInt(cashIn.amount)
         const previousAmount = parseInt(findUser.amount)
         const totalCashInAmount = parseInt(previousAmount + currentCashInAmount)
         const totalCashOutAmount = parseInt(agentAmount - currentCashInAmount)
+       
+        const cashOut={
+            amount:currentCashInAmount,
+
+        }
+
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -79,14 +86,15 @@ const Agent = () => {
                 console.log(resCashIn.data);
                 const resCA = await axiosSecure.patch(`/cash-outs/${id}`)
                 // console.log(resCA);
-                // reCall()
+                window.location.reload()
+                reCall()
                 refetch()
             }
         });
-        // console.log(resCA.data);
         // console.log(findUser);
         // console.log(cashIn);
     }
+
     return (
         <div className='m-10'>
             <div className='flex justify-between items-center'>
