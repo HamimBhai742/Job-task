@@ -43,7 +43,7 @@ const Registation = () => {
                             <input {...register('email', { required: true })} placeholder='Enter your email' className="block h-12 w-full px-4 py-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-pink-400 focus:ring-opacity-40 dark:focus:border-pink-300 focus:outline-none focus:ring focus:ring-pink-300 border-gray-300" type="email" />
                         </div>
                         <div className="mt-4">
-                            <label className="block mb-2 text-sm font-inter font-bold text-gray-600 dark:text-gray-200">Email</label>
+                            <label className="block mb-2 text-sm font-inter font-bold text-gray-600 dark:text-gray-200">Role</label>
                             <select {...register('role')} className="select select-bordered w-full max-w-xs">
                                 <option disabled selected>Choose your role</option>
                                 <option value='agent'>Agent</option>

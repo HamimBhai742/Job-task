@@ -2,7 +2,7 @@ import React from 'react';
 import nagadimg from '../../../assets/nagad.jpg'
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 const Login = () => {
@@ -23,21 +23,32 @@ const Login = () => {
         //     });
         //     return
         // }
-        const res = await axios.post(`http://localhost:5000/auth/login`, formdata)
-        console.log(res.data);
-        if (res.data) {
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "You have been successfully login",
-                showConfirmButton: false,
-                timer: 1500
-            });
-            navigate('/')
+        try {
+            const res = await axios.post(`http://localhost:5000/auth/login`, formdata)
+            // console.log(AxiosError.message);
+            console.log(res.data);
+            if (res.data) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "You have been successfully login",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                navigate('/')
+            }
+            const jwtToken = res.data.token
+            localStorage.setItem('token', jwtToken)
+            localStorage.setItem('email', formdata.email)
         }
-        const jwtToken = res.data.token
-        localStorage.setItem('token', jwtToken)
-        localStorage.setItem('email', formdata.email)
+        catch (err) {
+            console.log(err.response.data.message);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${err.response.data.message}`
+              });
+        }
 
         // const findUser = res.data?.find(user => user?.email === formdata?.emailOrnumber || user?.phone === formdata?.emailOrnumber)
         // console.log(findUser);

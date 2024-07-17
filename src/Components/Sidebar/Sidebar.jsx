@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { CiLogin, CiLogout } from 'react-icons/ci';
 import { FaUser } from 'react-icons/fa6';
-import { GrOverview } from 'react-icons/gr';
-import { MdAdminPanelSettings } from 'react-icons/md';
+import { GrOverview, GrTransaction } from 'react-icons/gr';
+import { MdAdminPanelSettings, MdManageAccounts } from 'react-icons/md';
 import { SiPowervirtualagents } from 'react-icons/si';
 import { Navigate, NavLink, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -13,6 +13,7 @@ const Sidebar = () => {
     const findUser = localStorage.getItem('token')
     const email = localStorage.getItem('email')
     const [role, setRole] = useState(null)
+    const [name, setName] = useState(null)
     console.log(email);
 
 
@@ -24,6 +25,7 @@ const Sidebar = () => {
                 }
             })
             console.log(res.data);
+            setName(res.data.name)
             setRole(res.data.role);
 
         }
@@ -96,6 +98,14 @@ const Sidebar = () => {
                                 </a>
                             </NavLink>
                         </li>}
+                        {role === 'user' && <li className="text-xl">
+                            <NavLink to='/transactions'>
+                                <a rel="noopener noreferrer" href="#" className="flex items-center p-2 space-x-3 rounded-md">
+                                    <p><GrTransaction/></p>
+                                    <span>Transactions</span>
+                                </a>
+                            </NavLink>
+                        </li>}
                         {role === 'agent' && <li className="text-xl">
                             <NavLink to='/agent'>
                                 <a rel="noopener noreferrer" href="#" className="flex items-center p-2 space-x-3 rounded-md">
@@ -109,6 +119,14 @@ const Sidebar = () => {
                                 <a className="flex items-center p-2 space-x-3 rounded-md">
                                     <p><MdAdminPanelSettings /></p>
                                     <span>Admin</span>
+                                </a>
+                            </NavLink>
+                        </li>}
+                        {role === 'admin' && <li className="text-xl">
+                            <NavLink to='/user-management'>
+                                <a className="flex items-center p-2 space-x-3 rounded-md">
+                                    <p><MdManageAccounts></MdManageAccounts></p>
+                                    <span>User Management</span>
                                 </a>
                             </NavLink>
                         </li>}
@@ -126,15 +144,6 @@ const Sidebar = () => {
                             }
                         </li>
                     </ul>
-                </div>
-            </div>
-            <div className="flex items-center p-2 mt-12 space-x-4 justify-self-end">
-                <img src="https://source.unsplash.com/100x100/?portrait" alt="" className="w-12 h-12 rounded-lg dark:bg-gray-500" />
-                <div>
-                    <h2 className="text-lg font-semibold">Leroy Jenkins</h2>
-                    <span className="flex items-center space-x-1">
-                        <a rel="noopener noreferrer" href="#" className="text-xs hover:underline dark:text-gray-600">View profile</a>
-                    </span>
                 </div>
             </div>
         </div>

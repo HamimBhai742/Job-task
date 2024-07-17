@@ -43,6 +43,14 @@ const router = createBrowserRouter([
         path: '/login',
         element: <Login></Login>
       },
+      {
+        path: '/user-management',
+        element: <UserManagement></UserManagement>
+      },
+      {
+        path: '/transactions',
+        element: <Transactions></Transactions>
+      },
     ]
   },
 ]);
@@ -51,6 +59,8 @@ import {
   QueryClient,
   QueryClientProvider
 } from '@tanstack/react-query'
+import UserManagement from './Components/UserManageMent/UserManagement.jsx';
+import Transactions from './Components/Pages/User/Transactions .jsx';
 
 const queryClient = new QueryClient()
 
