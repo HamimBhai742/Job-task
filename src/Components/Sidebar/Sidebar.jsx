@@ -77,7 +77,7 @@ const Sidebar = () => {
 
     }
     return (
-        <div className="flex flex-col h-full p-3 w-60 bg-gray-800 min-h-screen text-white">
+        <div className="flex fixed flex-col h-full p-3 w-60 bg-gray-800 min-h-screen text-white">
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <img src='../../../public/Nagad_Logo__1_-removebg-preview.png' alt="" />
@@ -114,6 +114,14 @@ const Sidebar = () => {
                                 <a rel="noopener noreferrer" href="#" className="flex items-center p-2 space-x-3 rounded-md">
                                     <p><SiPowervirtualagents /></p>
                                     <span>Agent</span>
+                                </a>
+                            </NavLink>
+                        </li>}
+                        {role === 'agent' && <li className="text-xl">
+                            <NavLink to='/transactions-agent'>
+                                <a rel="noopener noreferrer" href="#" className="flex items-center p-2 space-x-3 rounded-md">
+                                    <p><GrTransaction /></p>
+                                    <span>Transactions</span>
                                 </a>
                             </NavLink>
                         </li>}
