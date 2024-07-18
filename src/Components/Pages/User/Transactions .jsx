@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useUser from '../../../hooks/useUser';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const Transactions = () => {
     const axiosSecure = useAxiosSecure()
@@ -9,7 +9,7 @@ const Transactions = () => {
     const [transactions, setTransactions] = useState([])
     const [userData] = useUser()
     console.log(userData);
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -23,7 +23,7 @@ const Transactions = () => {
         fetchData()
     }, [])
     return (
-        <div className=' mx-10 mt-8'>
+        <div className=' mx-10 mt-8 ml-72'>
             <div className="overflow-x-auto">
                 <table className="table">
                     {/* head */}
@@ -43,7 +43,7 @@ const Transactions = () => {
                                 <td>{transaction?.transactionId}</td>
                                 <td>{transaction?.amount} TK</td>
                                 <td>
-                                    <p className='flex gap-2 items-center'><span className='text-green-600'><FaArrowRight></FaArrowRight></span>{transaction?.type}</p>
+                                    <p className='flex gap-2 items-center'>{transaction?.type === 'Cash In' ? <span className='text-green-600'><FaArrowRight></FaArrowRight></span> : <span className='text-red-600'><FaArrowLeft></FaArrowLeft></span>}{transaction?.type}</p>
                                 </td>
                                 <td>
                                     <p className={transaction?.status === 'complete' ? 'bg-emerald-100 font-medium text-emerald-600 px-5 rounded-full' : 'bg-pink-100 font-medium text-pink-600 px-5 rounded-full'}>{transaction?.status}</p>

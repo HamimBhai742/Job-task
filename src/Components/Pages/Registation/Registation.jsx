@@ -4,12 +4,14 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import nagadimg from '../../../assets/nagad.jpg'
 import axios from 'axios';
+import useAxiosPublic from '../../../hooks/useAxiosPublic';
 
 const Registation = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const axiosPublic=useAxiosPublic()
     const onSubmit = async (data) => {
         console.log(data);
-        const res = await axios.post('http://localhost:5000/auth/register', data)
+        const res = await axiosPublic.post('/auth/register', data)
         console.log(res.data);
     }
     // console.log(errors.pin?.type);

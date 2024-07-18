@@ -97,7 +97,7 @@ const User = () => {
     // console.log(repoData);
     return (
 
-        <div className='m-10'>
+        <div className='m-10 ml-72'>
             <div>
                 <h3 className='text-3xl font-bold'>Current Amount: {userData?.amount} TK</h3>
             </div>

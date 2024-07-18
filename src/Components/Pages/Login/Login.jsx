@@ -72,7 +72,7 @@ const Login = () => {
     //     }
     // })
     return (
-        <div className='m-8'>
+        <div className='m-8 ml-72'>
             <div className="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 lg:max-w-full">
                 <div className="hidden  lg:block lg:w-[650px] relative">
                     <img src={nagadimg} className='h-full' alt="" />
