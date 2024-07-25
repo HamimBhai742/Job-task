@@ -32,6 +32,7 @@ const Transaction = () => {
                             <th>Transaction Id</th>
                             <th>Amount</th>
                             <th>Type</th>
+                            <th>Time</th>
                             <th>Payment Status</th>
                         </tr>
                     </thead>
@@ -44,6 +45,7 @@ const Transaction = () => {
                                 <td>
                                     <p className='flex gap-2 items-center'>{transaction?.type === 'Cash In' ? <span className='text-green-600'><FaArrowRight></FaArrowRight></span> : <span className='text-red-600'><FaArrowLeft></FaArrowLeft></span>}{transaction?.type}</p>
                                 </td>
+                                <td>{transaction?.time}</td>
                                 <td>
                                     <p className={transaction?.status === 'complete' ? 'bg-emerald-100 font-medium text-emerald-600 px-5 rounded-full' : 'bg-pink-100 font-medium text-pink-600 px-5 rounded-full'}>{transaction?.status}</p>
                                 </td>

@@ -1,18 +1,40 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import nagadimg from '../../../assets/nagad.jpg'
-import axios from 'axios';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
+import Swal from 'sweetalert2';
 
 const Registation = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const axiosPublic=useAxiosPublic()
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const axiosPublic = useAxiosPublic()
+    const navigate = useNavigate()
     const onSubmit = async (data) => {
         console.log(data);
-        const res = await axiosPublic.post('/auth/register', data)
-        console.log(res.data);
+        try {
+            const res = await axiosPublic.post('/auth/register', data)
+            console.log(res.data.response);
+            if (res.data) {
+                reset()
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "You have been successfully registration.",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                navigate('/login')
+            }
+        } catch (err) {
+            console.log(err);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${err.response.data.message}`
+            });
+        }
+
     }
     // console.log(errors.pin?.type);
     return (

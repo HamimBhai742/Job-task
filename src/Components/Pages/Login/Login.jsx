@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 // import axios, { AxiosError } from 'axios';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-// import axiosPublic from '../../../hooks/useAxiosPublic';
+import axiosPublic from '../../../hooks/useAxiosPublic';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 const Login = () => {
     const axiosPublic = useAxiosPublic()
@@ -17,15 +17,6 @@ const Login = () => {
     }
     const onSubmit = async (formdata) => {
         console.log(formdata);
-
-        // if (findUser) {
-        //     Swal.fire({
-        //         icon: "error",
-        //         title: "Oops...",
-        //         text: "Something went wrong!"
-        //     });
-        //     return
-        // }
         try {
             const res = await axiosPublic.post(`/auth/login`, formdata)
             // console.log(AxiosError.message);
@@ -45,32 +36,15 @@ const Login = () => {
             localStorage.setItem('email', formdata.email)
         }
         catch (err) {
-            console.log(err.response.data.message);
+            console.log(err);
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: `${err.response.data.message}`
+                text: `${err?.response?.data?.message}`
             });
         }
-
-        // const findUser = res.data?.find(user => user?.email === formdata?.emailOrnumber || user?.phone === formdata?.emailOrnumber)
-        // console.log(findUser);
-        // if (findUser?.pin === formdata?.pin) {
-        //     console.log('login');
-        //     console.log(findUser);
-        // }
-        // else {
-        //     console.log('incorrected');
-        // }
-
     }
-    // const { isLoading, error, data } = useQuery({
-    //     queryKey: ['repoData'],
-    //     queryFn: async () => {
-    //         const res = await axios.get(`http://localhost:5000/registration?email=${formdata?.email}`)
-    //         console.log(res.data);
-    //     }
-    // })
+
     return (
         <div className='m-8 ml-72'>
             <div className="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 lg:max-w-full">

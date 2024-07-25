@@ -141,6 +141,14 @@ const Sidebar = () => {
                                 </a>
                             </NavLink>
                         </li>}
+                        {role === 'admin' && <li className="text-xl">
+                            <NavLink to='/system-monitoring'>
+                                <a className="flex items-center p-2 space-x-3 rounded-md">
+                                    <p><GrTransaction /></p>
+                                    <span>System Monitoring</span>
+                                </a>
+                            </NavLink>
+                        </li>}
 
                         <li className="text-xl hover:cursor-pointer" onClick={handelLogOutBtn}>
                             {findUser ?

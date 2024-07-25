@@ -55,6 +55,10 @@ const router = createBrowserRouter([
         path: '/transactions-agent',
         element: <Transaction></Transaction>
       },
+      {
+        path: '/system-monitoring',
+        element: <SystemMonitoring></SystemMonitoring>
+      },
     ]
   },
 ]);
@@ -66,6 +70,7 @@ import {
 import UserManagement from './Components/UserManageMent/UserManagement.jsx';
 import Transactions from './Components/Pages/User/Transactions .jsx';
 import Transaction from './Components/Pages/Agent/Transaction.jsx';
+import SystemMonitoring from './Components/SystemMonitoring/SystemMonitoring.jsx';
 
 const queryClient = new QueryClient()
 

@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import useUser from '../../../hooks/useUser';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
-const Transactions = () => {
+const SystemMonitoring = () => {
     const axiosSecure = useAxiosSecure()
-    const email = localStorage.getItem('email')
-    const [transactions, setTransactions] = useState([])
-    const [userData] = useUser()
-    console.log(userData);
-
+    const [allTransaction, setAllTransaction] = useState([])
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axiosSecure.get(`/transactions/${email}?status=complete`)
-                setTransactions(res.data);
+                const res = await axiosSecure.get('/all-transactions?status=complete')
+                setAllTransaction(res.data);
             }
             catch (err) {
                 console.log('err', err);
@@ -33,20 +28,18 @@ const Transactions = () => {
                             <th>Transaction Id</th>
                             <th>Amount</th>
                             <th>Type</th>
-                            <th>Time</th>
                             <th>Payment Status</th>
                         </tr>
                     </thead>
                     <tbody className='text-lg'>
                         {
-                            transactions.map((transaction, idx) => <tr key={idx} className="hover">
+                            allTransaction.map((transaction, idx) => <tr key={idx} className="hover">
                                 <th>{idx + 1}</th>
                                 <td>{transaction?.transactionId}</td>
                                 <td>{transaction?.amount} TK</td>
                                 <td>
-                                    <p className='flex gap-2 items-center'>{transaction?.type === 'Cash In' || transaction?.type === 'Received Money' ? <span className='text-green-600'><FaArrowRight></FaArrowRight></span> : <span className='text-red-600'><FaArrowLeft></FaArrowLeft></span>}{transaction?.type}</p>
+                                    <p className='flex gap-2 items-center'>{transaction?.type === 'Cash In' ? <span className='text-green-600'><FaArrowRight></FaArrowRight></span> : <span className='text-red-600'><FaArrowLeft></FaArrowLeft></span>}{transaction?.type}</p>
                                 </td>
-                                <td>{transaction?.time}</td>
                                 <td>
                                     <p className={transaction?.status === 'complete' ? 'bg-emerald-100 font-medium text-emerald-600 px-5 rounded-full' : 'bg-pink-100 font-medium text-pink-600 px-5 rounded-full'}>{transaction?.status}</p>
                                 </td>
@@ -59,4 +52,4 @@ const Transactions = () => {
     );
 };
 
-export default Transactions;
+export default SystemMonitoring;

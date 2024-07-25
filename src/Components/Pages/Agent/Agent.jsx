@@ -6,6 +6,7 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
 import crypto from 'crypto';
 import { nanoid } from 'nanoid';
+import { format } from 'date-fns';
 
 const Agent = () => {
     // const [startfn, setStartfn] = useState(false)
@@ -14,9 +15,11 @@ const Agent = () => {
     console.log(token, 'lil');
     const axiosPublic = useAxiosPublic()
     const axiosSecure = useAxiosSecure()
-
+    const formattedDate = format(new Date(), "MMM d, hh:mm a");
     // console.log(generateId());
     // const [cashInRequst, setCashInRequst] = useState([])
+    const generateId = () => nanoid(12);
+    const [transactions, setTransactions] = useState(generateId())
 
     const [alldata, setAllData] = useState([])
     const { data: agent, refetch: reCall } = useQuery({
@@ -57,6 +60,8 @@ const Agent = () => {
         }
     })
     console.log(cashInRequest);
+
+
     const handelCashInApproveBtn = async (id) => {
         console.log(id);
         // const agent=alldata
@@ -69,15 +74,17 @@ const Agent = () => {
         const previousAmount = parseFloat(findUser.amount)
         const totalCashInAmount = parseFloat(previousAmount + currentCashInAmount)
         const totalCashOutAmount = parseFloat(agentAmount - currentCashInAmount)
-        const generateId = () => nanoid(12);
+
+        // setTransactions(generateId())
         const cashOuts = {
             amount: currentCashInAmount,
             email: email,
-            transactionId: generateId(),
+            transactionId: transactions,
             type: 'Cash Out',
-            status: 'complete'
+            status: 'complete',
+            time: formattedDate
         }
-
+        console.log(cashOuts);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -92,8 +99,8 @@ const Agent = () => {
                 console.log(res.data);
                 const resCashIn = await axiosSecure.patch(`/cash-in/${cashIn?.email}?amount=${totalCashInAmount}`)
                 console.log(resCashIn.data);
-                const resCA = await axiosSecure.patch(`/cash-outs/${id}?type=Cash In`)
-                // console.log(resCA);
+                const resCA = await axiosSecure.patch(`/cash-outs/${id}?type=Cash In&&tra=${transactions}&&time=${formattedDate}`)
+                console.log(resCA);
                 const cashOut = await axiosSecure.post('/cash-out', cashOuts)
                 console.log(cashOut.data);
                 Swal.fire({
@@ -109,28 +116,41 @@ const Agent = () => {
         // console.log(findUser);
         // console.log(cashIn);
     }
+
+
     const handelCashOutApproveBtn = async (id) => {
         console.log(id);
         const cashOut = cashOutRequest.find(ca => ca?._id === id)
         console.log(cashOut);
         const findUserss = alldata.find(ca => ca?.email === cashOut?.email)
+        console.log(findUserss);
         const agent = alldata.find(ca => ca?.email === email)
         let agentAmount = parseFloat(agent?.amount)
         let currenCashOutAmount = parseFloat(cashOut.amount * 1.5 / 100)
         console.log(currenCashOutAmount);
         let currentCashOutAmount = parseFloat(cashOut.amount)
         let userAmount = parseFloat(findUserss.amount)
-        let totalCashIn = parseFloat(agentAmount + currentCashOutAmount + currenCashOutAmount)
+        let totalCashIn = parseFloat(agentAmount + currentCashOutAmount)
         let totalCashOut = parseFloat(userAmount - currentCashOutAmount - currenCashOutAmount)
         console.log(totalCashIn);
-        const generateId = () => nanoid(12);
+        const cashOutFee = {
+            amount: currenCashOutAmount,
+            email: cashOut?.email,
+            transactionId: generateId(),
+            type: 'Cash Out Fee',
+            status: 'complete',
+            time: formattedDate
+        }
+        setTransactions(generateId())
         const cashInss = {
             amount: currentCashOutAmount,
             email: email,
-            transactionId: generateId(),
+            transactionId: transactions,
             type: 'Cash In',
-            status: 'complete'
+            status: 'complete',
+            time: formattedDate
         }
+
         console.log(cashInss);
         Swal.fire({
             title: "Are you sure?",
@@ -145,9 +165,10 @@ const Agent = () => {
                 const res = await axiosSecure.patch(`/cash-out/${email}?amount=${totalCashIn}`)
                 console.log(res.data);
                 const resCashIn = await axiosSecure.patch(`/cash-in/${cashOut?.email}?amount=${totalCashOut}`)
-                const resCA = await axiosSecure.patch(`/cash-outs/${id}?type=Cash Out`)
+                const resCA = await axiosSecure.patch(`/cash-outs/${id}?type=Cash Out&&tra=${transactions}&&time=${formattedDate}`)
                 console.log(resCA);
-                const cashOutss = await axiosSecure.post('/cash-out', cashInss)
+                const doc = [cashInss, cashOutFee]
+                const cashOutss = await axiosSecure.post('/cash-out', doc)
                 console.log(cashOutss.data);
                 Swal.fire({
                     title: "Approved!",

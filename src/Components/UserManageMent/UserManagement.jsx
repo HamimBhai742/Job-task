@@ -14,6 +14,7 @@ const UserManagement = () => {
             return res.data;
         }
     })
+
     const handelBtn = async (e) => {
         const selected = e.target.value
         const email = selected.split(',')[1]
@@ -44,7 +45,7 @@ const UserManagement = () => {
         }
     }
     return (
-        <div>
+        <div className='ml-72 mt-10'>
             <div className="overflow-x-auto">
                 <table className="table">
                     {/* head */}
@@ -52,6 +53,7 @@ const UserManagement = () => {
                         <tr className='text-lg'>
                             <th>No.</th>
                             <th>Name</th>
+                            <th>Email</th>
                             <th>Role</th>
                             <th>Current Status</th>
                             <th>Action</th>
@@ -62,8 +64,11 @@ const UserManagement = () => {
                             allUsers.map((user, idx) => <tr key={idx} className="hover">
                                 <th>{idx + 1}</th>
                                 <td>{user?.name}</td>
+                                <td>{user?.email}</td>
                                 <td>{user?.role}</td>
-                                <td>{user?.status}</td>
+                                <td>
+                                    <p className={user?.status==='pending'?'bg-rose-100 text-rose-500 font-medium px-5 rounded-full':'bg-sky-100 text-sky-500 font-medium px-5 rounded-full'}>{user?.status}</p>
+                                </td>
                                 <td >
                                     <select onChange={handelBtn} className="select select-bordered w-full max-w-xs">
                                         <option disabled selected>User Status</option>
