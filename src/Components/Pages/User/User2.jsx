@@ -24,7 +24,7 @@ const User2 = () => {
         }
         console.log(data, sendData);
         console.log('object');
-        const resUser = await axiosPublic.get(`/send-user`)
+        const resUser = await axiosSecure.get(`/send-user`)
         const findUser = resUser.data.find(fi => fi.email === data.userEmail)
         console.log(data.userEmail);
         // console.log(resUser.data);
@@ -37,7 +37,16 @@ const User2 = () => {
             reset()
             return
         }
-        if (findUser.status === "pending") {
+        else if (findUser.role !== 'user') {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `This is not user email.`
+            });
+            reset()
+            return
+        }
+        else if (findUser.status === "pending") {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -46,6 +55,7 @@ const User2 = () => {
             reset()
             return
         }
+
 
         const formattedDate = format(new Date(), "MMM d, hh:mm a");
         console.log(formattedDate);
@@ -102,10 +112,10 @@ const User2 = () => {
                 time: formattedDate
             }
             const requests = [
-                await axiosPublic.patch(`/recived-money/${data.userEmail}?amount=${totalSendAmount}`),
-                await axiosPublic.patch(`/send-money/${email}?amount=${totalRecivedAmount}`),
-                await axiosPublic.post('/send-money', sendMoneyUser),
-                await axiosPublic.post('/recived-money', recivedMoneyUser)
+                await axiosSecure.patch(`/received-money/${data.userEmail}?amount=${totalSendAmount}`),
+                await axiosSecure.patch(`/send-money/${email}?amount=${totalRecivedAmount}`),
+                await axiosSecure.post('/send-money', sendMoneyUser),
+                await axiosSecure.post('/recived-money', recivedMoneyUser)
             ];
 
             if (currentSendAmount >= 100) {
@@ -117,7 +127,7 @@ const User2 = () => {
                     type: 'Send Money Fee',
                     time: formattedDate
                 }
-                const sendMoneyFee = await axiosPublic.post('/send-money-fee', sendFee)
+                const sendMoneyFee = await axiosSecure.post('/send-money-fee', sendFee)
                 console.log(sendMoneyFee.data);
             }
             const [upRecivedAmount, upSendAmount, sendMoney, recivedMoney] = await Promise.all(requests);

@@ -43,7 +43,7 @@ const Transaction = () => {
                                 <td>{transaction?.transactionId}</td>
                                 <td>{transaction?.amount} TK</td>
                                 <td>
-                                    <p className='flex gap-2 items-center'>{transaction?.type === 'Cash In' ? <span className='text-green-600'><FaArrowRight></FaArrowRight></span> : <span className='text-red-600'><FaArrowLeft></FaArrowLeft></span>}{transaction?.type}</p>
+                                    <p className='flex gap-2 items-center'>{transaction?.type === 'Cash In'||transaction?.type === 'New Agent Bonus' ? <span className='text-green-600'><FaArrowRight></FaArrowRight></span> : <span className='text-red-600'><FaArrowLeft></FaArrowLeft></span>}{transaction?.type}</p>
                                 </td>
                                 <td>{transaction?.time}</td>
                                 <td>

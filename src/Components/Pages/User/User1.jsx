@@ -25,7 +25,7 @@ const User1 = () => {
             status: 'pendings'
         }
         console.log(cashOut);
-        const resAgent = await axiosPublic.get(`/send-user`)
+        const resAgent = await axiosSecure.get(`/send-user`)
         const findAgent = resAgent.data.find(fi => fi.email === agentEmail)
         console.log(findAgent);
         const afterCashOutAm = parseFloat(chaekAm - cashData.amount)
