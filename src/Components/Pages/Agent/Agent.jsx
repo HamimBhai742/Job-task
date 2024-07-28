@@ -12,7 +12,7 @@ const Agent = () => {
     // const [startfn, setStartfn] = useState(false)
     const token = localStorage.getItem('token')
     const email = localStorage.getItem('email')
-    console.log(token, 'lil');
+    // console.log(token, 'lil');
     const axiosPublic = useAxiosPublic()
     const axiosSecure = useAxiosSecure()
     const formattedDate = format(new Date(), "MMM d, hh:mm a");
@@ -48,34 +48,39 @@ const Agent = () => {
     const { data: cashInRequest = [], refetch } = useQuery({
         queryKey: ['cashInRequest'],
         queryFn: async () => {
-            const res = await axiosSecure.get('/cash-in-out-request?status=pending')
+            const res = await axiosSecure.get(`/cash-in-out-request?status=pending&&email=${email}`)
             return res.data
         }
     })
     const { data: cashOutRequest = [], refetch: reUse } = useQuery({
         queryKey: ['cashOutRequest'],
         queryFn: async () => {
-            const res = await axiosSecure.get('/cash-in-out-request?status=pendings')
+            const res = await axiosSecure.get(`/cash-in-out-request?status=pendings&&email=${email}`)
             return res.data
         }
     })
-    console.log(cashInRequest);
-
-
     const handelCashInApproveBtn = async (id) => {
-        console.log(id);
         // const agent=alldata
         const cashIn = cashInRequest.find(ca => ca?._id === id)
-        console.log(cashIn);
         const findUser = alldata.find(ca => ca?.email === cashIn?.email)
         const agent = alldata.find(ca => ca?.email === email)
         const agentAmount = parseFloat(agent?.amount)
         const currentCashInAmount = parseFloat(cashIn.amount)
+        const agentCommssion = parseFloat(currentCashInAmount * 0.410 / 100)
+        // const agentCommssionAmount = parseFloat(agentAmount + agentCommssion)
         const previousAmount = parseFloat(findUser.amount)
         const totalCashInAmount = parseFloat(previousAmount + currentCashInAmount)
-        const totalCashOutAmount = parseFloat(agentAmount - currentCashInAmount)
-
-        // setTransactions(generateId())
+        const totalCashOutAmount = parseFloat(agentAmount + agentCommssion - currentCashInAmount)
+        // console.log(agentCommssionAmount);
+        const agentCommissionss = {
+            amount: agentCommssion,
+            email: email,
+            transactionId: generateId(),
+            type: 'Cash Out Commission',
+            status: 'complete',
+            time: formattedDate
+        }
+        setTransactions(generateId())
         const cashOuts = {
             amount: currentCashInAmount,
             email: email,
@@ -84,60 +89,61 @@ const Agent = () => {
             status: 'complete',
             time: formattedDate
         }
-        console.log(cashOuts);
         Swal.fire({
             title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            text: "You want approved this user cash in",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonText: "Yes, Approved!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const res = await axiosSecure.patch(`/cash-out/${email}?amount=${totalCashOutAmount}`)
-                console.log(res.data);
                 const resCashIn = await axiosSecure.patch(`/cash-in/${cashIn?.email}?amount=${totalCashInAmount}`)
-                console.log(resCashIn.data);
                 const resCA = await axiosSecure.patch(`/cash-outs/${id}?type=Cash In&&tra=${transactions}&&time=${formattedDate}`)
-                console.log(resCA);
-                const cashOut = await axiosSecure.post('/cash-out', cashOuts)
-                console.log(cashOut.data);
+                const docdoc = [cashOuts, agentCommissionss]
+                const cashOut = await axiosSecure.post('/cash-out', docdoc)
                 Swal.fire({
-                    title: "Approved!",
-                    text: "Cash In Request Approved Successfully.",
-                    icon: "success"
+                    position: "top-end",
+                    icon: "success",
+                    title: "Cash In Request Approved Successfully.",
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-                window.location.reload()
                 reCall()
                 refetch()
             }
         });
-        // console.log(findUser);
-        // console.log(cashIn);
+        console.log(findUser);
+        console.log(cashIn);
     }
 
 
     const handelCashOutApproveBtn = async (id) => {
-        console.log(id);
         const cashOut = cashOutRequest.find(ca => ca?._id === id)
-        console.log(cashOut);
         const findUserss = alldata.find(ca => ca?.email === cashOut?.email)
-        console.log(findUserss);
         const agent = alldata.find(ca => ca?.email === email)
         let agentAmount = parseFloat(agent?.amount)
         let currenCashOutAmount = parseFloat(cashOut.amount * 1.5 / 100)
-        console.log(currenCashOutAmount);
         let currentCashOutAmount = parseFloat(cashOut.amount)
         let userAmount = parseFloat(findUserss.amount)
-        let totalCashIn = parseFloat(agentAmount + currentCashOutAmount)
+        let agentsCommssions = parseFloat(currentCashOutAmount * 0.410 / 100)
+        let totalCashIn = parseFloat(agentAmount + currentCashOutAmount + agentsCommssions)
         let totalCashOut = parseFloat(userAmount - currentCashOutAmount - currenCashOutAmount)
-        console.log(totalCashIn);
         const cashOutFee = {
             amount: currenCashOutAmount,
             email: cashOut?.email,
             transactionId: generateId(),
             type: 'Cash Out Fee',
+            status: 'complete',
+            time: formattedDate
+        }
+        const agentCommissionsss = {
+            amount: agentsCommssions,
+            email: email,
+            transactionId: generateId(),
+            type: 'Cash In Commission',
             status: 'complete',
             time: formattedDate
         }
@@ -154,37 +160,36 @@ const Agent = () => {
         console.log(cashInss);
         Swal.fire({
             title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            text: "You want approved this user cash out!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonText: "Yes, Approved!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const res = await axiosSecure.patch(`/cash-out/${email}?amount=${totalCashIn}`)
-                console.log(res.data);
                 const resCashIn = await axiosSecure.patch(`/cash-in/${cashOut?.email}?amount=${totalCashOut}`)
                 const resCA = await axiosSecure.patch(`/cash-outs/${id}?type=Cash Out&&tra=${transactions}&&time=${formattedDate}`)
-                console.log(resCA);
-                const doc = [cashInss, cashOutFee]
+                const doc = [cashInss, cashOutFee, agentCommissionsss]
                 const cashOutss = await axiosSecure.post('/cash-out', doc)
-                console.log(cashOutss.data);
                 Swal.fire({
-                    title: "Approved!",
-                    text: "Cash In Request Approved Successfully.",
-                    icon: "success"
+                    position: "top-end",
+                    icon: "success",
+                    title: "Cash In Request Approved Successfully.",
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-                window.location.reload()
                 reCall()
                 refetch()
             }
         });
     }
+    const amountss = parseFloat(agent?.amount).toFixed(2)
     return (
         <div className='m-10 ml-72'>
             <div className=' text-2xl font-semibold'>
-                <p>Current Amount: {agent?.amount} TK</p>
+                <p>Current Amount: {amountss} TK</p>
             </div>
             <div className="overflow-x-auto mt-6">
                 <p className=' text-2xl font-semibold my-5'>Cash In Request</p>

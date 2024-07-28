@@ -35,9 +35,8 @@ const UserManagement = () => {
             });
             return
         }
-        console.log(status, email);
         const result = await axiosSucre.patch(`/update-user/${email}?status=${status}`)
-        console.log(result.data);
+    
         refetch()
         const newUserbonus = {
             email: email,
@@ -63,13 +62,11 @@ const UserManagement = () => {
                 await axiosSucre.post('/new-user-bonus',newUserbonus)
             ]
             const [newUserBonus, newUserBonusTra] = await Promise.all(requests);
-            console.log(newUserBonus.data);
-            console.log(newUserBonusTra.data);
         }
 
         if (role === 'agent' && bonus === 'undefined') {
-            const re = await axiosSucre.patch(`/new-agent-bonus/${email}`)
-            console.log(re.data);
+            // const re = await axiosSucre.patch(`/new-agent-bonus/${email}`)
+            // console.log(re.data);
             const request = [
                 await axiosSucre.patch(`/new-agent-bonus/${email}`),
                 await axiosSucre.post('/new-user-bonus',newAgentbonus)

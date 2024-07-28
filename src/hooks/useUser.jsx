@@ -6,7 +6,7 @@ const useUser = () => {
     const email = localStorage.getItem('email')
     const axiosSecure = useAxiosSecure()
     const { data: userData = [] } = useQuery({
-        queryKey: [''],
+        queryKey: ['userData'],
         queryFn: async () => {
             const res = await axiosSecure.get(`/user?email=${email}`)
             return res.data

@@ -17,13 +17,10 @@ const User2 = () => {
     const [transaction, setTransaction] = useState(generateId())
     const chaekAm = parseInt(userData.amount)
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    console.log('djadsdsx');
     const sendMoneyData = async (data) => {
         const sendData = {
             transactionId: generateId()
         }
-        console.log(data, sendData);
-        console.log('object');
         const resUser = await axiosSecure.get(`/send-user`)
         const findUser = resUser.data.find(fi => fi.email === data.userEmail)
         console.log(data.userEmail);
@@ -58,19 +55,15 @@ const User2 = () => {
 
 
         const formattedDate = format(new Date(), "MMM d, hh:mm a");
-        console.log(formattedDate);
         const userAmount = parseFloat(findUser?.amount)
         const currentSendAmount = parseFloat(data.amount)
         let currentAmount = parseFloat(userData.amount)
-        console.log(currentSendAmount);
         if (currentSendAmount >= 100) {
             currentAmount = parseFloat(userData.amount - 5)
-            console.log('object');
         }
         console.log(currentAmount);
         const totalSendAmount = parseFloat(userAmount + currentSendAmount)
         const totalRecivedAmount = parseFloat(currentAmount - currentSendAmount)
-        console.log(totalSendAmount, totalRecivedAmount);
         try {
             const res = await axiosPublic.post(`/auth/login`, data)
             if (chaekAm <= 50) {
@@ -92,8 +85,6 @@ const User2 = () => {
                 return
             }
             setTransaction(generateId())
-            console.log(transaction);
-            console.log(email, data.userEmail);
             const sendMoneyUser = {
                 email: email,
                 amount: data.amount,
@@ -128,13 +119,8 @@ const User2 = () => {
                     time: formattedDate
                 }
                 const sendMoneyFee = await axiosSecure.post('/send-money-fee', sendFee)
-                console.log(sendMoneyFee.data);
             }
             const [upRecivedAmount, upSendAmount, sendMoney, recivedMoney] = await Promise.all(requests);
-            console.log('Received Amount Updated:', upRecivedAmount.data);
-            console.log('Sent Amount Updated:', upSendAmount.data);
-            console.log('Sent Amount Updated:', sendMoney.data);
-            console.log('Sent Amount Updated:', recivedMoney.data);
             if (sendMoney.data.insertedId && recivedMoney.data.insertedId) {
                 Swal.fire({
                     position: "top-end",
@@ -145,7 +131,7 @@ const User2 = () => {
                 });
                 reset()
             }
-
+            window.location.reload()
         } catch (err) {
             console.log(err);
             Swal.fire({

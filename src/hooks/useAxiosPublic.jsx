@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosPublic = axios.create({
-    baseURL: 'https://jobs-task-01-server.vercel.app'
+    baseURL: 'http://localhost:5000'
 })
 const useAxiosPublic = () => {
     return axiosPublic

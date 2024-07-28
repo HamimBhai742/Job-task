@@ -27,9 +27,7 @@ const User1 = () => {
         console.log(cashOut);
         const resAgent = await axiosSecure.get(`/send-user`)
         const findAgent = resAgent.data.find(fi => fi.email === agentEmail)
-        console.log(findAgent);
         const afterCashOutAm = parseFloat(chaekAm - cashData.amount)
-        console.log(afterCashOutAm);
         try {
             const res = await axiosPublic.post(`/auth/login`, cashData)
             if (chaekAm <= 50) {
@@ -77,7 +75,6 @@ const User1 = () => {
                 reset()
                 return
             }
-            console.log('object');
             const result = await axiosSecure.post(`/cash-in-out`, cashOut)
             Swal.fire({
                 position: "top-end",

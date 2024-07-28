@@ -1,6 +1,6 @@
 import axios from 'axios';
 const axiosSucre = axios.create({
-    baseURL: 'https://jobs-task-01-server.vercel.app'
+    baseURL: 'http://localhost:5000'
 })
 const useAxiosSecure = () => {
     axiosSucre.interceptors.request.use(function (config) {
