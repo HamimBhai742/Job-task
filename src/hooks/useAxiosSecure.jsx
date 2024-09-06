@@ -1,7 +1,7 @@
 import axios from 'axios';
 const axiosSucre = axios.create({
-    baseURL: 'http://localhost:5000'
-})
+  baseURL: "https://jobs-task-01-server.vercel.app",
+});
 const useAxiosSecure = () => {
     axiosSucre.interceptors.request.use(function (config) {
         const token = localStorage.getItem('token')
@@ -17,11 +17,6 @@ const useAxiosSecure = () => {
         const status = error?.response?.status
         console.log(status);
         if (status === 401 || status === 403) {
-            // console.log('Bangladesh');
-            // localStorage.removeItem('token')
-            // localStorage.removeItem('access-token')
-            // localStorage.removeItem('email')
-            // navigate('/login')
         }
         return Promise.reject(error);
     })
